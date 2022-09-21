@@ -28,11 +28,12 @@ public class MainActivity extends AppCompatActivity {
         Button myButton = variableBinding.myButton;
         TextView myText = variableBinding.myTextView;
         EditText myEdit = variableBinding.myEditText;
-        String editString = myEdit.getText().toString();
+ //       String editString = myEdit.getText().toString();
 //        myButton.setOnClickListener(v->{myText.setText("Your edit text has: " + editString); });
 
+        myButton.setOnClickListener(v->{model.editString1.postValue(variableBinding.myEditText.getText().toString());});
         model.editString1.observe(this, s ->{myText.setText("Your edit test has" + s);});
-        myButton.setOnClickListener(v->{model.editString1.postValue(editString);});
+
         // old method for using widgets called findViewById(R.id.myId)
 //        setContentView(R.layout.activity_main);
 //        Button myButton = findViewById(R.id.myButton);
