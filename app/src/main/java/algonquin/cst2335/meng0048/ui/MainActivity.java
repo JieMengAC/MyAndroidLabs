@@ -31,8 +31,11 @@ public class MainActivity extends AppCompatActivity {
  //       String editString = myEdit.getText().toString();
 //        myButton.setOnClickListener(v->{myText.setText("Your edit text has: " + editString); });
 
-        myButton.setOnClickListener(v->{model.editString1.postValue(variableBinding.myEditText.getText().toString());});
-        model.editString1.observe(this, s ->{myText.setText("Your edit test has" + s);});
+        myButton.setOnClickListener(v->
+                {   String myEditString = myEdit.getText().toString();
+                    model.editString.postValue(myEditString);
+                });
+        model.editString.observe(this, s ->{myText.setText("Your edit test has" + s);});
 
         // old method for using widgets called findViewById(R.id.myId)
 //        setContentView(R.layout.activity_main);

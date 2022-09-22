@@ -5,5 +5,5 @@ import androidx.lifecycle.ViewModel;
 
 public class MainViewModel extends ViewModel {
 
-    public MutableLiveData<String> editString1 = new MutableLiveData<>();
+    public MutableLiveData<String> editString = new MutableLiveData<>();
 }
