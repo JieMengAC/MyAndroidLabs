@@ -6,104 +6,59 @@ import androidx.lifecycle.ViewModelProvider;
 import android.content.Context;
 import android.os.Bundle;
 import android.view.View;
+import android.view.animation.Animation;
+import android.view.animation.LinearInterpolator;
+import android.view.animation.RotateAnimation;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageView;
+import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import java.time.Duration;
 
+import algonquin.cst2335.meng0048.R;
 import algonquin.cst2335.meng0048.data.MainViewModel;
 import algonquin.cst2335.meng0048.databinding.ActivityMainBinding;
 
 public class MainActivity extends AppCompatActivity {
 //
-    private MainViewModel model;
+
     private ActivityMainBinding variableBinding;
+    ImageView imgView;
+    Switch sw;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_main);
 
-        model = new ViewModelProvider(this).get(MainViewModel.class);
 
         //loads the XML file on Screen:
-        variableBinding = ActivityMainBinding.inflate(getLayoutInflater());
-        setContentView(variableBinding.getRoot());
-        Button myButton = variableBinding.myButton;
-        TextView myText = variableBinding.myTextView;
-        EditText myEdit = variableBinding.myEditText;
- //       String editString = myEdit.getText().toString();
-//        myButton.setOnClickListener(v->{myText.setText("Your edit text has: " + editString); });
+//        variableBinding = ActivityMainBinding.inflate(getLayoutInflater());
+//        setContentView(variableBinding.getRoot());
 
-        myButton.setOnClickListener(v->
-                {   String myEditString = myEdit.getText().toString();
-                    model.editString.postValue(myEditString);
-                });
-        model.editString.observe(this, s ->{myText.setText("Your edit test has" + s);});
+        imgView = findViewById(R.id.imageView);
+        sw = findViewById(R.id.spin_switch);
+        sw.setOnCheckedChangeListener((btn, isChecked)->{
+            if (isChecked)
+            {
+                RotateAnimation rotate = new RotateAnimation(0, 360, Animation.RELATIVE_TO_SELF, 0.5f, Animation.RELATIVE_TO_SELF, 0.5f);
+                rotate.setDuration(5000);
+                rotate.setRepeatCount(Animation.INFINITE);
+                rotate.setInterpolator(new LinearInterpolator());
 
-        // old method for using widgets called findViewById(R.id.myId)
-//        setContentView(R.layout.activity_main);
-//        Button myButton = findViewById(R.id.myButton);
-//        TextView myText = findViewById(R.id.myTextView);
-//        EditText myEdit = findViewById(R.id.myEditText);
-
-//        myButton.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View view) {
-//                String editString = myEdit.getText().toString();
-//                myText.setText("Your edit text has: " + editString);
-//
-//            }
-//        });
-
-        // using compound buttons in lab2
-        String str = "Do you drink coffee?";
-        String strRadio = variableBinding.radioButton.getText().toString();
-        String strSwitch1 = variableBinding.switch1.getText().toString();
-        model.isChecked.observe(this, selected->{
-
-            variableBinding.checkBox.setChecked(selected);
-            variableBinding.checkBox.setText(str+selected);
-
-            variableBinding.radioButton.setChecked(selected);
-            variableBinding.radioButton.setText(strRadio+selected);
-
-            variableBinding.switch1.setChecked(selected);
-            variableBinding.switch1.setText(strSwitch1+selected);
-
-            //toast
-            Context context = getApplicationContext();
-            CharSequence text = "The value is now: " + selected;
-            int duration = Toast.LENGTH_SHORT;
-            Toast.makeText(context,text,duration).show();
-
+                imgView.startAnimation(rotate);
+            }
+            else {
+                imgView.clearAnimation();
+            }
         });
 
 
-        variableBinding.checkBox.setOnCheckedChangeListener((button,checked)->{
-            model.isChecked.postValue(checked);
-
-        });
 
 
-        variableBinding.radioButton.setOnCheckedChangeListener((button,checked)->{
-            model.isChecked.postValue(checked);
-
-        });
-
-
-        variableBinding.switch1.setOnCheckedChangeListener((button,checked)->{
-            model.isChecked.postValue(checked);
-        });
-
-        variableBinding.myimagebutton.setOnClickListener(v->{
-            Context context = getApplicationContext();
-            int duration = Toast.LENGTH_SHORT;
-            int width = variableBinding.myimagebutton.getWidth();
-            int height = variableBinding.myimagebutton.getHeight();
-            CharSequence text= "The width = " + width + " and height = " + height;
-            Toast.makeText(context,text,duration).show();
-        });
 
 
 
