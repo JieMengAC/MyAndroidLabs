@@ -5,7 +5,9 @@ import androidx.activity.result.ActivityResultCallback;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.util.Log;
 import android.widget.Button;
@@ -21,17 +23,30 @@ public class MainActivity extends AppCompatActivity {
 
 
 
+
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        Log.e("MainActivity","In Concrete");
         binding = ActivityMainBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
+
+        SharedPreferences prefs = getSharedPreferences("MyData", Context.MODE_PRIVATE);
+        String emailAddress = prefs.getString("LoginName","");
+        binding.editTextEmailAddress.setText(emailAddress);
+
         binding.loginButton.setOnClickListener(click->{
                 Intent nextPage =new Intent(MainActivity.this, SecondActivity.class);// show where you want to go
 
                 nextPage.putExtra("EmailAddress",binding.editTextEmailAddress.getText().toString());
 
+                SharedPreferences.Editor editor = prefs.edit();
+                editor.putString("LoginName", binding.editTextEmailAddress.getText().toString());
+//              editor.putString("PhoneNumber","123456");
+                editor.apply();
                 startActivity(nextPage);
+
 
         });
         Log.w( "MainActivity", "In onCreate() - Loading Widgets" );

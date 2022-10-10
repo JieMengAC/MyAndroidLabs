@@ -25,7 +25,7 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="104dp"
         android:ems="10"
-        android:inputType="phone"
+        android:inputType=""
         app:layout_constraintTop_toBottomOf="@+id/textView_secondPage"
         tools:ignore="MissingConstraints"
         tools:layout_editor_absoluteX="-3dp" />
