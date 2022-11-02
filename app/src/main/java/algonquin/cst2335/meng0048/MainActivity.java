@@ -1,15 +1,30 @@
 package algonquin.cst2335.meng0048;
 
-import androidx.appcompat.app.AppCompatActivity;
-
+import android.app.Activity;
+import android.content.Intent;
 import android.os.Bundle;
 
-public class MainActivity extends AppCompatActivity {
-//ffffffffff
+import androidx.annotation.Nullable;
+
+
+import algonquin.cst2335.meng0048.databinding.ActivityMainBinding;
+
+public class MainActivity extends Activity {
+    ActivityMainBinding binding;
+
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
+    protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        //loads the XML file on Screen:
-        setContentView(R.layout.activity_main);
+        binding = ActivityMainBinding.inflate( getLayoutInflater());
+        setContentView(binding.getRoot());
+
+        binding.loginButton.setOnClickListener( click -> {
+            Intent nextPage = new Intent( MainActivity.this, SecondActivity.class );
+
+            nextPage.putExtra("EmailAddress", binding.editTextEmailAddress.getText().toString());
+
+            startActivity(nextPage);
+        });
+
     }
 }
