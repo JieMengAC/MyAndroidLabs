@@ -34,8 +34,10 @@ public class ChatRoom extends AppCompatActivity {
         binding = ActivityChatRoomBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
 
+        // get values from ChatRoomViewModel and assign the values to allMessages
         chatModel = new ViewModelProvider(this).get(ChatRoomViewModel.class);
         allMessages = chatModel.messages.getValue();
+        // initiate allMessages if the messages declared in ChatRoomViewModel is null
         if(allMessages == null)
         {
             chatModel.messages.postValue( allMessages = new ArrayList<ChatMessage>() );
@@ -43,13 +45,15 @@ public class ChatRoom extends AppCompatActivity {
 
         binding.recycleView.setLayoutManager( new LinearLayoutManager(this));
 
-        //add the message typed in the edittext to the allMessages
+        //add the message typed in the edittext and time to the allMessages
         binding.sendButton.setOnClickListener( click -> {
 
             String message = binding.textInput.getText().toString();
             SimpleDateFormat sdf = new SimpleDateFormat("EEEE, dd-MMM-yyyy hh-mm-ss a");
             String currentDateandTime = sdf.format( new Date());
 
+            //ChatMessage message = new ChatMessage( message, currentDateandTime,true);
+            //allMessages.add( message);
              allMessages.add( new ChatMessage( message, currentDateandTime,true));
              myAdapter.notifyItemInserted(allMessages.size()-1);
              binding.textInput.setText("");
@@ -99,10 +103,10 @@ public class ChatRoom extends AppCompatActivity {
             public int getItemViewType(int position) {
                 ChatMessage object = allMessages.get(position);
 
-                if(object.getIsSentButton())
+                if(object.getIsSentButton()) // if(object.getIsSentButton() == true)
                     return 0; //0 represents send, text on the left
                 else
-                    return 1;
+                    return 1;//1 represents receive, text on the right
             }
         });
     }
