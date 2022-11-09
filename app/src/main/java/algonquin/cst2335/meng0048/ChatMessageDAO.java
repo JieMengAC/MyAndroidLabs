@@ -15,7 +15,7 @@ import java.util.List;
 public interface ChatMessageDAO {
 
     @Insert
-     void insertMessage(ChatMessage m);
+     long insertMessage(ChatMessage m);
 
     @Query("Select * from ChatMessage")
      List<ChatMessage> getAllMessages();
