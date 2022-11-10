@@ -11,4 +11,5 @@
     <color name="nightSecondary">#4b4b58</color>
     <color name="nightStatusBarColor">#E0E0E0</color>
     <color name="my_text">#ED0A0A</color>
+    <color name="purple_200">#CA51DF</color>
 </resources>
