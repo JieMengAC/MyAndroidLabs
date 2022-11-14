@@ -73,6 +73,7 @@ public class ChatRoom extends AppCompatActivity {
             FragmentManager fMgr = getSupportFragmentManager();
             FragmentTransaction tx = fMgr.beginTransaction();
             tx.add(R.id.fragmentLocation,chatFragment);
+            tx.addToBackStack("Back to previous activity");
             tx.commit();//This line actually loads the fragment into the specified FrameLayout
 
             //build pattern
