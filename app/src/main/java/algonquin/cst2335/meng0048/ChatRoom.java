@@ -5,13 +5,12 @@ import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
-import androidx.lifecycle.MutableLiveData;
-import androidx.lifecycle.ViewModel;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.room.Room;
 
+import android.content.Context;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
@@ -19,6 +18,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.google.android.material.snackbar.Snackbar;
 
@@ -29,7 +29,6 @@ import java.util.concurrent.Executor;
 import java.util.concurrent.Executors;
 
 import algonquin.cst2335.meng0048.databinding.ActivityChatRoomBinding;
-import algonquin.cst2335.meng0048.databinding.SentMessageBinding;
 
 public class ChatRoom extends AppCompatActivity {
 
@@ -56,7 +55,7 @@ public class ChatRoom extends AppCompatActivity {
         messageText = binding.recycleView.findViewById(R.id.message);
         timeText = binding.recycleView.findViewById(R.id.time);
         switch( item.getItemId()){
-            case R.id.item_1:
+            case R.id.delete:
 
                 ChatMessage  thisMessage = chatModel.selectedMessage.getValue();
 
@@ -87,10 +86,16 @@ public class ChatRoom extends AppCompatActivity {
                                 myAdapter.notifyItemInserted(position);
                             }).show();
                         }).create().show();
-
-
-
                 break;
+            case R.id.info:
+                    Context context = getApplicationContext();
+                    CharSequence text = "Version 1.0, created by Jie Meng";
+                    int duration = Toast.LENGTH_SHORT;
+                    Toast.makeText(context,text,duration).show();
+                    break;
+
+
+
         }
         return true;
     }
@@ -130,6 +135,7 @@ public class ChatRoom extends AppCompatActivity {
             });
 
         }
+        // Observer for chatModel
         chatModel.selectedMessage.observe(this, (newMessageValue) -> {
 
             MessageDetailsFragment  chatFragment = new MessageDetailsFragment( newMessageValue );
