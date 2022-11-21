@@ -14,6 +14,8 @@ import androidx.room.Room;
 
 import android.os.Bundle;
 import android.util.Log;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
@@ -38,12 +40,73 @@ public class ChatRoom extends AppCompatActivity {
     ChatMessageDAO mDAO;
 
 
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        super.onCreateOptionsMenu(menu);
+        getMenuInflater().inflate(R.menu.my_menu, menu);
+        return true ;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
+        super.onOptionsItemSelected(item);
+        TextView messageText;
+        TextView timeText;
+        messageText = binding.recycleView.findViewById(R.id.message);
+        timeText = binding.recycleView.findViewById(R.id.time);
+        switch( item.getItemId()){
+            case R.id.item_1:
+
+                ChatMessage  thisMessage = chatModel.selectedMessage.getValue();
+
+                AlertDialog.Builder builder = new AlertDialog.Builder( ChatRoom.this);
+                // method with build pattern
+                builder.setMessage(thisMessage.message)
+                        .setTitle("Do you want to delete this message?")
+                        .setNegativeButton("No", (dialog, cl) ->{ })
+                        .setPositiveButton("Yes", (dialog, cl) ->{
+
+                            Executor thread = Executors.newSingleThreadExecutor();
+                            thread.execute( () ->{
+                                mDAO.deleteMessage(thisMessage);
+
+                            });
+
+                            allMessages.remove(thisMessage);
+                            myAdapter.notifyItemRemoved(position);
+
+                            Snackbar.make(messageText,"You deleted position #" + position,
+                                    Snackbar.LENGTH_LONG).setAction("Undo",clk->{
+//                                        Executor thread = Executors.newSingleThreadExecutor();
+                                thread.execute(()->{
+                                    mDAO.insertMessage(thisMessage);
+                                });
+                                //                                allMessages.add(position, thisMessage);
+                                chatModel.messages.getValue().add(position,thisMessage);
+                                myAdapter.notifyItemInserted(position);
+                            }).show();
+                        }).create().show();
+
+
+
+                break;
+        }
+        return true;
+    }
+
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
         binding = ActivityChatRoomBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
+
+        setSupportActionBar(binding.myToolbar);
+
+
+
 
         MessageDatabase db = Room.databaseBuilder(getApplicationContext(), MessageDatabase.class,
                 "MessageDatabase").build();
@@ -188,7 +251,7 @@ public class ChatRoom extends AppCompatActivity {
         });
     }
 
-
+    int position;
     class MyRowHolder extends RecyclerView.ViewHolder{
         TextView messageText;
         TextView timeText;
@@ -197,10 +260,11 @@ public class ChatRoom extends AppCompatActivity {
             messageText = itemView.findViewById(R.id.message);
             timeText = itemView.findViewById(R.id.time);
 
+
             itemView.setOnClickListener( click ->{
 
                   //which row was click
-                int position = getAbsoluteAdapterPosition();
+                position = getAbsoluteAdapterPosition();
                 ChatMessage selected = allMessages.get(position);
                 chatModel.selectedMessage.postValue( selected );
 
@@ -231,7 +295,8 @@ public class ChatRoom extends AppCompatActivity {
                                         chatModel.messages.getValue().add(position,thisMessage);
                                         myAdapter.notifyItemInserted(position);
                                  }).show();
-                        }).create().show();*/
+                        }).create().show();
+                        */
 
 
 
@@ -242,5 +307,8 @@ public class ChatRoom extends AppCompatActivity {
         }
 
     }
+
+
+
 
 }
