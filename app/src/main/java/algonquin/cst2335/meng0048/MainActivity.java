@@ -96,14 +96,12 @@ public class MainActivity extends AppCompatActivity {
                             String pathname = getFilesDir()+"/" + iconName +".png";
                             File file = new File( pathname );
 
-
                             if(file.exists()){
                                 image = BitmapFactory.decodeFile(pathname);
                             }
                             else{
                                 ImageRequest imgReq = new ImageRequest( imageUrl,
                                         new Response.Listener<Bitmap> () {
-
                                             @Override
                                             public void onResponse(Bitmap bitmap) {
 
@@ -112,28 +110,34 @@ public class MainActivity extends AppCompatActivity {
                                                     image.compress(Bitmap.CompressFormat.PNG, 100,
                                                             MainActivity.this.openFileOutput( iconName + ".png",
                                                                     Activity.MODE_PRIVATE));
+                                                    FileOutputStream fOut = null;
+                                                    try {
+                                                        fOut = openFileOutput( iconName +".png", Context.MODE_PRIVATE);
+                                                        image.compress(Bitmap.CompressFormat.PNG, 100, fOut);
+                                                        fOut.flush();
+                                                        fOut.close();
+                                                    } catch (IOException e) {
+                                                        e.printStackTrace();
+                                                    }
                                                 } catch (FileNotFoundException e) {
                                                     e.printStackTrace();
                                                 }
+                                                runOnUiThread( () -> {
+                                                    binding.icon.setImageBitmap(image);
+                                                    binding.icon.setVisibility(View.VISIBLE);
+
+                                                });
+
 
                                             }
-                                        },
-                                        1024, 1024, ImageView.ScaleType.CENTER, null,
-                                        ( error) -> {
+                                        }, 1024, 1024, ImageView.ScaleType.CENTER, null,
+                                            ( error) -> {
 
                                         });
                                 queue.add(imgReq);
                             }
 
-//                            FileOutputStream fOut = null;
-//                            try {
-//                                fOut = openFileOutput( iconName +".png", Context.MODE_PRIVATE);
-//                                image.compress(Bitmap.CompressFormat.PNG, 200, fOut);
-//                                fOut.flush();
-//                                fOut.close();
-//                            } catch (IOException e) {
-//                                e.printStackTrace();
-//                            }
+
 
                             runOnUiThread( ( ) -> {
                                 binding.temp.setText("The current temperature is " + current);
@@ -155,24 +159,13 @@ public class MainActivity extends AppCompatActivity {
                                 binding.description.setVisibility(View.VISIBLE);
                             });
 
-
-
-
-
-
                         } catch (JSONException e) {
                             e.printStackTrace();
                         }
-
-
                     },
-                    ( error ) -> {
+                        ( error ) -> {
 
-                    }
-
-
-
-
+                        }
                     );
 
             queue.add( request );
