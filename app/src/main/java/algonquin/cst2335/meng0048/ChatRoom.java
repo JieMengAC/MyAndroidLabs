@@ -37,6 +37,7 @@ public class ChatRoom extends AppCompatActivity {
     ActivityChatRoomBinding binding;
     private RecyclerView.Adapter<MyRowHolder> myAdapter;
     ChatMessageDAO mDAO;
+    MessageDetailsFragment  chatFragment;
 
 
 
@@ -57,35 +58,55 @@ public class ChatRoom extends AppCompatActivity {
         switch( item.getItemId()){
             case R.id.delete:
 
-                ChatMessage  thisMessage = chatModel.selectedMessage.getValue();
+                try {
 
-                AlertDialog.Builder builder = new AlertDialog.Builder( ChatRoom.this);
-                // method with build pattern
-                builder.setMessage(thisMessage.message)
-                        .setTitle("Do you want to delete this message?")
-                        .setNegativeButton("No", (dialog, cl) ->{ })
-                        .setPositiveButton("Yes", (dialog, cl) ->{
+                    ChatMessage selectedMessage = chatModel.selectedMessage.getValue();
+                    MyRowHolder selectedRow = chatModel.selectedRow.getValue();
+                    if( selectedMessage != null){
+                        int position = selectedRow.getAbsoluteAdapterPosition();
+                        ChatMessage thisMessage = allMessages.get(position);
 
-                            Executor thread = Executors.newSingleThreadExecutor();
-                            thread.execute( () ->{
-                                mDAO.deleteMessage(thisMessage);
+                    AlertDialog.Builder builder = new AlertDialog.Builder(ChatRoom.this);
+                    // method with build pattern
+                    builder.setMessage(thisMessage.message)
+                            .setTitle("Do you want to delete this message?")
+                            .setNegativeButton("No", (dialog, cl) -> {
+                            })
+                            .setPositiveButton("Yes", (dialog, cl) -> {
 
-                            });
+                                Executor thread = Executors.newSingleThreadExecutor();
+                                thread.execute(() -> {
+                                    mDAO.deleteMessage(thisMessage);
 
-                            allMessages.remove(thisMessage);
-                            myAdapter.notifyItemRemoved(position);
-
-                            Snackbar.make(messageText,"You deleted position #" + position,
-                                    Snackbar.LENGTH_LONG).setAction("Undo",clk->{
-//                                        Executor thread = Executors.newSingleThreadExecutor();
-                                thread.execute(()->{
-                                    mDAO.insertMessage(thisMessage);
                                 });
-                                //                                allMessages.add(position, thisMessage);
-                                chatModel.messages.getValue().add(position,thisMessage);
-                                myAdapter.notifyItemInserted(position);
-                            }).show();
-                        }).create().show();
+
+                                allMessages.remove(thisMessage);
+                                myAdapter.notifyItemRemoved(position);
+
+                                getSupportFragmentManager()
+                                        .beginTransaction()
+                                        .remove(chatFragment)
+                                        .commit();
+
+                                Snackbar.make(messageText, "You deleted position #" + position,
+                                        Snackbar.LENGTH_LONG).setAction("Undo", clk -> {
+//                                        Executor thread = Executors.newSingleThreadExecutor();
+                                    thread.execute(() -> {
+                                        mDAO.insertMessage(thisMessage);
+                                    });
+                                    //                                allMessages.add(position, thisMessage);
+                                    chatModel.messages.getValue().add(position, thisMessage);
+                                    myAdapter.notifyItemInserted(position);
+                                }).show();
+                            }).create().show();
+                    }
+                    else{
+                        Toast.makeText(ChatRoom.this,"please select a message",Toast.LENGTH_LONG).show();
+                    }
+                }
+                catch (IndexOutOfBoundsException e){
+                    Toast.makeText(ChatRoom.this,"please select a message",Toast.LENGTH_LONG).show();
+                }
                 break;
             case R.id.info:
                     Context context = getApplicationContext();
@@ -138,7 +159,7 @@ public class ChatRoom extends AppCompatActivity {
         // Observer for chatModel
         chatModel.selectedMessage.observe(this, (newMessageValue) -> {
 
-            MessageDetailsFragment  chatFragment = new MessageDetailsFragment( newMessageValue );
+              chatFragment = new MessageDetailsFragment( newMessageValue );
             FragmentManager fMgr = getSupportFragmentManager();
             FragmentTransaction tx = fMgr.beginTransaction();
             tx.add(R.id.fragmentLocation,chatFragment);
@@ -273,6 +294,7 @@ public class ChatRoom extends AppCompatActivity {
                 position = getAbsoluteAdapterPosition();
                 ChatMessage selected = allMessages.get(position);
                 chatModel.selectedMessage.postValue( selected );
+                chatModel.selectedRow.postValue(this);
 
 
                 /* AlertDialog.Builder builder = new AlertDialog.Builder( ChatRoom.this);

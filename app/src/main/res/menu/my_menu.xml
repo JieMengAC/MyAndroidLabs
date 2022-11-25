@@ -11,6 +11,6 @@
         android:id="@+id/info"
         android:icon="@drawable/info"
         android:title="About"
-        app:showAsAction="always" />
+        app:showAsAction="never" />
 
 </menu>

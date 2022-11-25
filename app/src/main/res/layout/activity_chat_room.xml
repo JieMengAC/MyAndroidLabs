@@ -8,13 +8,22 @@
     android:orientation="horizontal">
 
 
-
-
-        <androidx.constraintlayout.widget.ConstraintLayout
+    <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent">
 
-            <androidx.recyclerview.widget.RecyclerView
+        <androidx.appcompat.widget.Toolbar
+            android:id="@+id/myToolbar"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="?attr/colorPrimary"
+            android:minHeight="?attr/actionBarSize"
+            android:theme="?attr/actionBarTheme"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/recycleView"
                 android:layout_width="0dp"
                 android:layout_height="0dp"
@@ -47,7 +56,19 @@
                 app:layout_constraintStart_toEndOf="@+id/sendButton"
                 app:layout_constraintTop_toTopOf="@+id/sendButton" />
 
-            <Button
+        <FrameLayout
+            android:id="@+id/fragmentLocation"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            app:layout_constraintBottom_toBottomOf="@+id/recycleView"
+            app:layout_constraintEnd_toEndOf="@+id/recycleView"
+            app:layout_constraintStart_toStartOf="@+id/recycleView"
+            app:layout_constraintTop_toBottomOf="@+id/myToolbar"
+            app:layout_constraintVertical_bias="0.0">
+
+        </FrameLayout>
+
+        <Button
                 android:id="@+id/receiveButton"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -56,29 +77,7 @@
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintTop_toTopOf="@+id/textInput" />
 
-            <androidx.appcompat.widget.Toolbar
-                android:id="@+id/myToolbar"
-                android:layout_width="409dp"
-                android:layout_height="wrap_content"
-                android:background="?attr/colorPrimary"
-                android:minHeight="?attr/actionBarSize"
-                android:theme="?attr/actionBarTheme"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent" />
-
-            <FrameLayout
-                android:id="@+id/fragmentLocation"
-                android:layout_width="match_parent"
-                android:layout_height="650dp"
-                android:layout_marginTop="30dp"
-                app:layout_constraintBottom_toBottomOf="@+id/recycleView"
-                app:layout_constraintTop_toTopOf="@+id/myToolbar"
-                tools2:layout_editor_absoluteX="1dp">
-
-            </FrameLayout>
-
-        </androidx.constraintlayout.widget.ConstraintLayout>
+    </androidx.constraintlayout.widget.ConstraintLayout>
 
 
 </LinearLayout>
